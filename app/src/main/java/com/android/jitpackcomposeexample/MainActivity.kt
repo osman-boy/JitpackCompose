@@ -1,11 +1,14 @@
 package com.android.jitpackcomposeexample
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,22 +28,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+data class Person(val name: String, val lastname: String, val profession: String)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val persons = mutableListOf<Person>()
+        for (i in 0..1000){
+            persons.add(Person("John","Wick","Killer"))
+        }
         setContent {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
+            LazyColumn(modifier = Modifier
+                .fillMaxSize()
+                , horizontalAlignment = Alignment.CenterHorizontally) {
+                itemsIndexed(persons) { _, item ->
+                    ListItem(name = item.name, lastname = item.lastname, profession = item.profession)
+                }
 
-                ListItem(name = "John", lastname = "Wick", profession = "Killer")
-                ListItem(name = "John", lastname = "Wick", profession = "Killer")
-                ListItem(name = "John", lastname = "Wick", profession = "Killer")
-                ListItem(name = "John", lastname = "Wick", profession = "Killer")
-                ListItem(name = "John", lastname = "Wick", profession = "Killer")
-                ListItem(name = "John", lastname = "Wick", profession = "Killer")
-                ListItem(name = "John", lastname = "Wick", profession = "Killer")
-                ListItem(name = "John", lastname = "Wick", profession = "Killer")
-                ListItem(name = "John", lastname = "Wick", profession = "Killer")
-                ListItem(name = "John", lastname = "Wick", profession = "Killer")
             }
         }
     }
@@ -52,7 +55,7 @@ fun ListItem(name: String, lastname: String, profession: String) {
     val counter = remember {
         mutableStateOf(0)
     }
-    val color:MutableState<Color> = remember {
+    val color: MutableState<Color> = remember {
         mutableStateOf(Color.Black)
     }
     Card(
@@ -60,12 +63,12 @@ fun ListItem(name: String, lastname: String, profession: String) {
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                color.value=  when (++counter.value) {
+                color.value = when (++counter.value) {
                     in 0..5 -> Color.Black
                     in 6..11 -> Color.Red
                     in 12..18 -> Color.Green
                     in 19..25 -> Color.Yellow
-                    else->Color.Black
+                    else -> Color.Black
                 }
 
             },
@@ -97,8 +100,6 @@ fun ListItem(name: String, lastname: String, profession: String) {
                         color = color.value
                     )
                 }
-
-
             }
         }
     }
